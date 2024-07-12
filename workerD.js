@@ -2,7 +2,7 @@ let Service;
 const DB = {
     db: null,
     open: sqlite => {
-        DB.db = new sqlite.oo1.OpfsDb('/mydb.sqlite3');
+        DB.db = new sqlite.oo1.OpfsDb('mydb.sqlite3');
         let [table] = DB.SQL(`SELECT name FROM sqlite_master WHERE type='table' AND name='original'`);
         table || DB.init(new URLSearchParams(self.location.href).get('key'));
     },
@@ -20,13 +20,13 @@ const DB = {
 };
 const API = req => {
     try {
-        if (req == '/api/reset/')
+        if (req.includes('/api/reset/'))
             return Service.postMessage(DB.discard());
-        if (req == '/api/get/')
+        if (req.includes('/api/get/'))
             return Service.postMessage(DB.SQL(`SELECT * from original order by random() limit 1`));
-        if (/^\/api\/get\/[\d,]+$/.test(req))
+        if (/\/api\/get\/[\d,]+$/.test(req))
             return Service.postMessage(DB.SQL(`SELECT * from original where id in (${/[\d,]+$/.exec(req)})`));
-        if (/^\/sql/.test(req))
+        if (/\/sql/.test(req))
             return Service.postMessage(DB.SQL(decodeURIComponent(req.match(/(?<=sql\/).+/)) + ' limit 1000'));
     }
     catch (er) {

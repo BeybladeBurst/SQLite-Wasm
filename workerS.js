@@ -13,7 +13,7 @@ self.onmessage = ev => DB = Object.assign(ev.ports[0], {
 let DB;
 const API = async req => {
     const {host, pathname} = new URL(req.url);
-    if (/^\/(?:api|sql)\//.test(pathname))
+    if (/\/(?:api|sql)\//.test(pathname))
         return DB.query(pathname).then((data) => typeof data == 'number' ? 
             new Response('', {status: data}) : Function.prototype.call.bind(Object.prototype.toString)(data) == '[object Error]' ? 
             new Response(data, {status: 500}) :
