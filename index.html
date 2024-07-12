@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<title>Hello, sqlite3</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<button onclick='RESET()'>Reset</button>
+<br>
+<button data-api="/api/get/">Random result</button><p></p>
+<input placeholder="select * from original"> limit 1000<button id="sql">SQL result</button><p></p>
+<script>
+  let workerS, workerD, channel = new MessageChannel();
+
+  navigator.serviceWorker.register('/workerS.js').then(({installing, active}) => {
+    workerS = installing ?? active;
+    workerS.postMessage('', [channel.port1]);
+    workerD = new Worker(`workerD.js?sqlite3.dir=jswasm&key=${window.location.hash.substring(1)}`);
+    workerD.postMessage('', [channel.port2]);
+    workerD.addEventListener('message', ev => ev.data === 0 ? location.reload() : document.body.append(ev.data));
+  }).catch(console.error);
+</script>
+<script>
+  document.querySelectorAll('[data-api]').forEach(button => button.onclick = () => 
+    fetch(button.dataset.api).then(resp => resp.text()).then(re => button.nextElementSibling.innerText = re)
+  );
+  document.querySelector('#sql').onclick = ({target: {previousElementSibling: input, nextElementSibling: p}}) =>
+    fetch(`/sql/${input.value || input.placeholder}`)
+    .then(resp => resp.text())
+    .then(re => p.innerText = re)
+    .catch(er => p.innerText = er.toString());
+
+  const RESET = () => 
+    fetch('/api/reset/')
+    .then(resp => resp.ok || Promise.reject(resp))
+    .then(() => location.reload()).catch(er => console.error(er));
+  
+</script>
