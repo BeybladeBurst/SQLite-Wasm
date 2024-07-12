@@ -18,16 +18,16 @@ const DB = {
 
     discard: () => DB.SQL('DROP table original'),
 };
-const API = req => {
+const API = url => {
     try {
-        if (req.includes('/api/reset/'))
+        if (url.includes('/api/reset/'))
             return Service.postMessage(DB.discard());
-        if (req.includes('/api/get/'))
+        if (url.includes('/api/get/'))
             return Service.postMessage(DB.SQL(`SELECT * from original order by random() limit 1`));
-        if (/\/api\/get\/[\d,]+$/.test(req))
-            return Service.postMessage(DB.SQL(`SELECT * from original where id in (${/[\d,]+$/.exec(req)})`));
-        if (/\/sql/.test(req))
-            return Service.postMessage(DB.SQL(decodeURIComponent(req.match(/(?<=sql\/).+/)) + ' limit 1000'));
+        if (/\/api\/get\/[\d,]+$/.test(url))
+            return Service.postMessage(DB.SQL(`SELECT * from original where id in (${/[\d,]+$/.exec(url)})`));
+        if (/\/sql/.test(url))
+            return Service.postMessage(DB.SQL(decodeURIComponent(url.match(/(?<=sql\/).+/)) + ' limit 1000'));
     }
     catch (er) {
         return console.error(er) ?? Service.postMessage(er);

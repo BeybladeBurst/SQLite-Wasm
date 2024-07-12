@@ -9,12 +9,12 @@
 <script>
   let workerS, workerD, channel = new MessageChannel();
 
-  navigator.serviceWorker.register('workerS.js', {scope: '/SQLite-Wasm/'}).then(({installing, active}) => {
+  navigator.serviceWorker.register('workerS.js', {scope: location.host.includes('127.0.0.1') ? '/' : '/SQLite-Wasm/'}).then(({installing, active}) => {
     workerS = installing ?? active;
     workerS.postMessage('', [channel.port1]);
     workerD = new Worker(`workerD.js?sqlite3.dir=jswasm&key=${window.location.hash.substring(1)}`);
     workerD.postMessage('', [channel.port2]);
-    workerD.addEventListener('message', ev => ev.data === 0 ? location.reload() : document.body.append(ev.data));
+    workerD.addEventListener('message', ev => ev.data === 0 ? location.reoad() : document.body.append(ev.data));
   }).catch(console.error);
 </script>
 <script>
