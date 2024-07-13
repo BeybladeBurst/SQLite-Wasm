@@ -5,18 +5,18 @@ self.addEventListener('fetch', ev => ev.respondWith(
         Routes.DB(ev.request.url) : Routes.headers(ev.request)
 ));
 
-self.onmessage = ev => DB = Object.assign(ev.ports[0], {
+self.onmessage = ev => workerD = Object.assign(ev.ports[0], {
     query: url => new Promise(res => {
-        DB.postMessage(url);
-        DB.addEventListener('message', ev => res(ev.data), {once: true});
+        workerD.postMessage(url);
+        workerD.addEventListener('message', ev => res(ev.data), {once: true});
     }),
     onmessage: ev => {},
 });
 
-let DB;
+let workerD;
 
 const Routes = {
-    DB: url => DB.query(url)
+    DB: url => workerD.query(url)
         .then(data => typeof data == 'number' ? new Response('', { status: data }) : 
             Function.prototype.call.bind(Object.prototype.toString)(data) == '[object Error]' ?
                 new Response(data, { status: 500 }) : new Response(JSON.stringify(data))
