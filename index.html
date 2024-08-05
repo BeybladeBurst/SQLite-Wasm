@@ -5,7 +5,7 @@
 <script src="DOM.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" integrity="sha512-E8QSvWZ0eCLGk4km3hxSsNmGWbLtSCSUcewDQPQWZF6pEU8GlT8a5fF32wOl1i8ftdMhssTrF/OhyGWwonTcXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-<button onclick='RESET()'>Reset</button>
+<button data-api="api/reset/">Reset</button>
 <br>
 <button data-api="api/get/">Random result</button><p></p>
 <input placeholder="select * from original"> limit 1000<button id="sql">SQL result</button><p></p>
@@ -28,11 +28,5 @@
     fetch(`sql/${input.value || input.placeholder}`)
     .then(resp => resp.text())
     .then(re => p.innerText = re)
-    .catch(er => p.innerText = er.toString());
-
-  const RESET = () => 
-    fetch('api/reset/')
-    .then(resp => resp.ok || Promise.reject(resp))
-    .then(() => location.reload()).catch(er => console.error(er));
-  
+    .catch(er => p.innerText = er.toString());  
 </script>
