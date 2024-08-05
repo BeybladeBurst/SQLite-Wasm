@@ -17,7 +17,7 @@
     workerS.postMessage('', [channel.port1]);
     workerD = new Worker(`workerD.js?sqlite3.dir=jswasm&key=${window.location.hash.substring(1)}`);
     workerD.postMessage('', [channel.port2]);
-    workerD.addEventListener('message', ev => ev.data === 0 ? location.reoad() : document.body.append(ev.data));
+    workerD.addEventListener('message', ev => ev.data === 0 ? location.reload() : document.body.append(ev.data));
   }).catch(console.error);
 </script>
 <script>
