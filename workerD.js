@@ -16,7 +16,7 @@ const DB = {
         })
         .catch(er => self.postMessage('Error') ?? console.error(er) ?? DB.discard()),
 
-    discard: () => DB.SQL('DROP table original'),
+    discard: () => DB.SQL('DROP table original') && 'ok',
 };
 const API = url => {
     try {
