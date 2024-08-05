@@ -21,9 +21,9 @@
   }).catch(console.error);
 </script>
 <script>
-  Q('[data-api]').onclick = () => 
-    fetch(button.dataset.api).then(resp => resp.text()).then(re => button.nextElementSibling.innerText = re);
-    
+  Q('[data-api]', button => button.onclick = ev => 
+    fetch(button.dataset.api).then(resp => resp.text()).then(re => button.nextElementSibling.innerText = re)
+  );  
   Q('#sql').onclick = ({target: {previousElementSibling: input, nextElementSibling: p}}) =>
     fetch(`sql/${input.value || input.placeholder}`)
     .then(resp => resp.text())
